@@ -7,25 +7,57 @@ from eralchemy2 import render_er
 
 Base = declarative_base()
 
-class Person(Base):
-    __tablename__ = 'person'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
+class Usuario(Base):
+    __tablename__ = 'usuario'
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    nombre = Column(String(250), nullable=False)
+    apellido = Column(String(250), nullable=False)
+    signo = Column(String(250), nullable=True)
+    foto = Column(String(250), nullable=True)
+    email = Column(String(250), nullable=False, unique=True)
+    password = Column(String(250), nullable=False)
 
-class Address(Base):
-    __tablename__ = 'address'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
+    favorito = relationship("Favorito", back_populates="usuario")
+
+
+class Personaje(Base):
+    __tablename__ = 'personaje'
     id = Column(Integer, primary_key=True)
-    street_name = Column(String(250))
-    street_number = Column(String(250))
-    post_code = Column(String(250), nullable=False)
-    person_id = Column(Integer, ForeignKey('person.id'))
-    person = relationship(Person)
+    nombre = Column(String(250), nullable=False)
+    genero = Column(String(250), nullable=False)
+    altura = Column(Integer)
+    color_ojos = Column(String(250))
+    peso = Column(Integer, nullable=False)
+    planeta_nacimiento = Column(String(250), nullable=False)
 
-    def to_dict(self):
+    favorito = relationship("Favorito", back_populates="personaje")
+    
+
+class Planeta(Base):
+    __tablename__ = 'planeta'
+    id = Column(Integer, primary_key=True)
+    nombre = Column(String(250), nullable=False)
+    diametro = Column(Integer)
+    gravedad = Column(Integer)
+    clima = Column(String(250))
+    poblacion = Column(Integer, nullable=False)
+
+    favorito = relationship("Favorito", back_populates="planeta")
+    
+
+class Favorito (Base):
+    __tablename__ = 'favorito'
+    id = Column(Integer, primary_key=True)
+    usuario_id = Column(Integer, ForeignKey('usuario.id'), nullable=False)
+    planeta_id = Column(Integer, ForeignKey('planeta.id'), nullable=False)
+    personaje_id = Column(Integer, ForeignKey('personaje.id'), nullable=False)
+
+    usuario = relationship("Usuario", back_populates="favorito")
+    personaje = relationship("Personaje", back_populates="favorito")
+    planeta = relationship("Planeta", back_populates="favorito")
+
+git 
+def to_dict(self):
         return {}
 
 ## Draw from SQLAlchemy base
